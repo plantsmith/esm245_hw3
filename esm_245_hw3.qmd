@@ -1,0 +1,98 @@
+---
+title: "Stated Preferences"
+author: "Natalie Smith"
+format: 
+  html:
+    code-fold: true
+    toc: true
+    number-sections: true
+    embed-resources: true
+theme: Litera
+editor: visual
+execute:
+  echo: true
+  message: false
+  warning: false
+
+---
+
+# Background:
+
+Climate change is leading to more unpredictable weather patterns, such as variable rainfall, droughts, and floods, which can negatively impact agriculture and fisheries. One way to mitigate these risks is through insurance, like "index insurance" for farmers. In this system, farmers pay an annual premium, and the insurance uses a reliable, measurable index (such as rainfall) to determine payouts. If rainfall falls below a certain threshold, the farmer receives a financial payout to compensate for low income due to poor agricultural conditions. Since payouts are based solely on weather indices, farmers cannot manipulate the system to increase their payout.
+
+The Environmental Markets Lab (emLab) at Bren conducted a study to evaluate fishermen’s willingness to pay for index insurance in fisheries.In the study, fishermen were presented with a randomized insurance premium and asked whether they would pay it. Responses were either "yes" (willing to pay) or "no" (unwilling to pay). Along with their responses, socioeconomic data and risk-aversion metrics were collected to understand what influences their willingness to pay for such insurance.
+
+# Data
+
+```{r}
+# Load libraties
+library(tidyverse)
+library(here)
+library(kableExtra)
+library(knitr)
+
+# Load the data
+insurance_df <- read_csv(here("data", "insurance.csv"))
+
+```
+
+The columns are: 1) ID = Respondent identifier (indicated by i below) 2) Premium = the premium offered to that respondent. These were randomized across respondents. 3) Yes = whether the respondent answered Yes (so Yes=1) or No (so Yes=0). 4) Age = age of the respondent 5) Years = number of years the respondent has been fishing 6) Length = the length of the respondents fishing vessel (in meters) 7) Risk = a measure of risk aversion of the respondent (higher than 1 indicates risk averse, lower than 1 indicates risk loving)
+
+# Regression analysis
+
+$$
+Yes_{i} = a_{0} + a_{1}*Premium_{i} + a_{2}*Age_{i} + a_{3}*Years_{i} + a_{4}*Length_{i} + a_{5}*Risk_{i} + e_{i}
+$$
+
+You will use your regression results to help determine the willingness to pay of fishermen for index insurance. 
+
+1) Load the dataset into R and make a summary table describing the min, mean, and max of each variable. 
+```{r}
+summary(insurance_df)
+```
+
+2) Run the regression described above. Make a summary table of the coefficient estimates and the p-values for each of them. 
+```{r}
+# run linear regression on variables in formula
+lm_insurance <- lm(Yes ~ Premium + Age + Years + Length + Risk, data = insurance_df)
+
+# Extract the coefficients summary
+coeff_summary <- summary(lm_insurance)$coefficients
+
+# Display the coefficients with kable
+kable(coeff_summary, caption = "Full Summary of Coefficient Estimates and P-values") %>% 
+  kable_styling(bootstrap_options = 
+                  c("striped", "hover", "condensed", "responsive"))
+```
+
+3) Write a 1-2 sentence interpretation of the coefficient estimate for a1. 
+4) Do the coefficient estimates have the sign you would have expected? Write a brief explanation for each (around 1 sentence for each coefficient estimate). 
+5) Consider a fisher named Susan, who is 35 years old, has been fishing for 8 years, uses a 10m boat, and has a risk score of 1.1. Make a plot with the Premium on the x-axis and the Probability of Susan’s purchase on the y-axis. What is Susan’s average willingness to pay for index insurance?
+```{r}
+# Create a data frame for Susan - set the min and max of the premium coulmn based on the insurance data and fix the other variables
+susan_df <- data.frame(
+  Premium = 
+    seq(min(insurance_df$Premium), max(insurance_df$Premium), length.out = 100),
+  Age = 35,
+  Years = 8,
+  Length = 10,
+  Risk = 1.1)
+
+# Calculate the predicted probabilities for Susan based on the linear model (lm_insurance) aka how likely is susan is to accept the insurance premium at different price points based on her profile. 
+susan_df$Yes_prob <- predict(lm_insurance, newdata = susan_df, type = "response")
+
+# Plot the Premium vs. Probability of Purchase
+ggplot(susan_df, aes(x = Premium, y = Yes_prob)) +
+  geom_line() +
+  labs(title = "Probability of Susan's Purchase vs. Premium",
+       x = "Premium",
+       y = "Probability of Purchase") +
+  theme_minimal()
+
+# Find the premium where Susan's purchase probability is closest to 0.5
+# Finding the premium closest to a 50% purchase probability is often used to assess an individual's average willingness to pay for a product. 
+avg_wtp <- susan_df$Premium[which.min(abs(susan_df$Yes_prob - 0.5))]
+avg_wtp
+
+```
+
