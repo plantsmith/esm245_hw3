@@ -3450,7 +3450,10 @@ window.Quarto = {
   <ul>
   <li><a href="#background" id="toc-background" class="nav-link active" data-scroll-target="#background"><span class="header-section-number">1</span> Background:</a></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><span class="header-section-number">2</span> Data</a></li>
-  <li><a href="#regression-analysis" id="toc-regression-analysis" class="nav-link" data-scroll-target="#regression-analysis"><span class="header-section-number">3</span> Regression analysis</a></li>
+  <li><a href="#regression-analysis" id="toc-regression-analysis" class="nav-link" data-scroll-target="#regression-analysis"><span class="header-section-number">3</span> Regression Analysis:</a>
+  <ul class="collapse">
+  <li><a href="#update-table" id="toc-update-table" class="nav-link" data-scroll-target="#update-table"><span class="header-section-number">3.0.1</span> update table</a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -3491,7 +3494,7 @@ window.Quarto = {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraties</span></span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load libraries</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
@@ -3501,19 +3504,19 @@ window.Quarto = {
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>insurance_df <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="fu">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;insurance.csv&quot;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>The columns are:</p>
+<p>The columns in the data set are as follows:</p>
 <ul>
-<li>1) ID = Respondent identifier</li>
-<li>2) Premium = the (randomized) premium offered to that respondent</li>
-<li>3) Yes = whether the respondent answered Yes (so Yes=1) or No (so Yes=0)</li>
-<li>4) Age = age of the respondent</li>
-<li>5) Years = number of years the respondent has been fishing</li>
-<li>6) Length = the length of the respondents fishing vessel (in meters)</li>
-<li>7) Risk = a measure of risk aversion of the respondent (higher than 1 indicates risk averse, lower than 1 indicates risk loving)</li>
+<li><p>ID = Respondent identifier</p></li>
+<li><p>Premium = the (randomized) premium offered to that respondent</p></li>
+<li><p>Yes = whether the respondent answered Yes (1) or No (0)</p></li>
+<li><p>Age = age of the respondent</p></li>
+<li><p>Years = number of years the respondent has been fishing</p></li>
+<li><p>Length = the length of the respondent’s fishing vessel (in meters)</p></li>
+<li><p>Risk = a measure of risk aversion (higher than 1 indicates risk-averse, lower than 1 indicates risk-loving)</p></li>
 </ul>
 </section>
 <section id="regression-analysis" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Regression analysis</h1>
+<h1 data-number="3"><span class="header-section-number">3</span> Regression Analysis:</h1>
 <p><span class="math display">\[
 Yes_{i} = a_{0} + a_{1}*Premium_{i} + a_{2}*Age_{i} + a_{3}*Years_{i} + a_{4}*Length_{i} + a_{5}*Risk_{i} + e_{i}
 \]</span></p>
@@ -3545,10 +3548,12 @@ Yes_{i} = a_{0} + a_{1}*Premium_{i} + a_{2}*Age_{i} + a_{3}*Years_{i} + a_{4}*Le
 <ol start="2" type="1">
 <li>Run the regression described above. Make a summary table of the coefficient estimates and the p-values for each of them.</li>
 </ol>
+<section id="update-table" class="level3" data-number="3.0.1">
+<h3 data-number="3.0.1" class="anchored" data-anchor-id="update-table"><span class="header-section-number">3.0.1</span> update table</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># run linear regression on variables in formula</span></span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run linear regression on variables in formula</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>lm_insurance <span class="ot">&lt;-</span> <span class="fu">lm</span>(Yes <span class="sc">~</span> Premium <span class="sc">+</span> Age <span class="sc">+</span> Years <span class="sc">+</span> Length <span class="sc">+</span> Risk, <span class="at">data =</span> insurance_df)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract the coefficients summary</span></span>
@@ -3625,34 +3630,42 @@ Yes_{i} = a_{0} + a_{1}*Premium_{i} + a_{2}*Age_{i} + a_{3}*Years_{i} + a_{4}*Le
 </div>
 <ol start="3" type="1">
 <li>Write a 1-2 sentence interpretation of the coefficient estimate for a1.</li>
-<li>Do the coefficient estimates have the sign you would have expected? Write a brief explanation for each (around 1 sentence for each coefficient estimate).</li>
+</ol>
+<p>The coefficient for <strong>Premium</strong> is -0.0017888, meaning that for each one-unit increase in the premium, the probability of purchasing insurance decreases by about 0.0018. The very low p-value (&lt; 2e-16) indicates this result is statistically significant, showing that higher costs reduce the likelihood of purchase.</p>
+<p>###UPDATE THIS 4) Do the coefficient estimates have the sign you would have expected?</p>
+<p>Premium: The coefficient is negative (−0.0017888) and significant, which matches expectations. As the premium increases, the probability of purchasing the insurance decreases, which is logical since higher costs typically deter buyers. As the premium increases, the likelihood of purchasing insurance is expected to decrease. Higher costs typically deter consumers, leading to a negative relationship.</p>
+<p>Age: The coefficient is positive (0.0035704) but not statistically significant (p-value = 0.3962), meaning age does not have a significant effect on the likelihood of purchasing insurance in this model.The effect of age on willingness to pay can be complex. Older fishermen might be more risk-averse and willing to pay for insurance, or they might have less flexibility in terms of financial resources. Thus, the sign can vary based on context.</p>
+<p>Years: The coefficient for years of experience is also positive (0.0062549), but with a p-value of 0.3617, it is not statistically significant, suggesting that experience doesn’t strongly influence the willingness to pay for insurance in this case.More years of fishing experience might correlate with a better understanding of risks, potentially leading to a greater willingness to pay for insurance. Experienced fishermen may recognize the value of protecting their income against unpredictable weather patterns.</p>
+<p>Length: The coefficient is positive ( 0.0176010) and statistically significant (p-value = 4.65e−06). This indicates that larger vessel owners are more likely to purchase insurance, likely because they have more assets at stake. The length of the vessel could indicate the scale of operations. Larger vessels might lead to higher income and thus a greater willingness to invest in insurance, or conversely, they might not feel the need for insurance as much if they believe they can manage risks. The sign may depend on individual circumstances.</p>
+<p>Risk: The coefficient for risk aversion is positive (0.2429055) and statistically significant (p-value = 0.0209). This suggests that more risk-averse fishermen are more likely to buy insurance, which aligns with expectations as those who are more risk-averse tend to seek security. A higher risk aversion score indicates that a respondent is more risk-averse. It is expected that more risk-averse individuals would be willing to pay more for insurance as a way to mitigate potential losses.</p>
+<ol start="5" type="1">
 <li>Consider a fisher named Susan, who is 35 years old, has been fishing for 8 years, uses a 10m boat, and has a risk score of 1.1. Make a plot with the Premium on the x-axis and the Probability of Susan’s purchase on the y-axis. What is Susan’s average willingness to pay for index insurance?</li>
 </ol>
+<p><span class="math display">\[
+Intercept_{susan} = a_{0} + a_{2}*35 + a_{3}*8 + a_{4}*10 + a_{5}*1.1
+\]</span></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame for Susan - set the min and max of the premium coulmn based on the insurance data and fix the other variables</span></span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame for Susan with premiums ranging from the min to max values in the insurance data</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>susan_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Premium =</span> </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq</span>(<span class="fu">min</span>(insurance_df<span class="sc">$</span>Premium), <span class="fu">max</span>(insurance_df<span class="sc">$</span>Premium), <span class="at">length.out =</span> <span class="dv">100</span>),</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Age =</span> <span class="dv">35</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Years =</span> <span class="dv">8</span>,</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Length =</span> <span class="dv">10</span>,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">Risk =</span> <span class="fl">1.1</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Premium =</span> <span class="fu">seq</span>(<span class="fu">min</span>(insurance_df<span class="sc">$</span>Premium), <span class="fu">max</span>(insurance_df<span class="sc">$</span>Premium), <span class="at">length.out =</span> <span class="dv">100</span>),</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Age =</span> <span class="dv">35</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Years =</span> <span class="dv">8</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Length =</span> <span class="dv">10</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Risk =</span> <span class="fl">1.1</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the predicted probabilities for Susan based on the linear model (lm_insurance) aka how likely is susan is to accept the insurance premium at different price points based on her profile. </span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># no one has higher than 100% prob of purchasing insurance, so its bounded by 1 at the top. Flat at the</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>susan_df<span class="sc">$</span>yes_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(lm_insurance, <span class="at">newdata =</span> susan_df, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the Premium vs. Probability of Purchase</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(susan_df, <span class="fu">aes</span>(<span class="at">x =</span> Premium, <span class="at">y =</span> yes_prob)) <span class="sc">+</span></span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Probability of Susan&#39;s Purchase vs. Premium&quot;</span>,</span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Premium&quot;</span>,</span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Probability of Purchase&quot;</span>) <span class="sc">+</span></span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the predicted probabilities for Susan based on her profile</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>susan_df<span class="sc">$</span>yes_prob <span class="ot">&lt;-</span> <span class="fu">predict</span>(lm_insurance, <span class="at">newdata =</span> susan_df, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot Premium vs. Probability of Purchase</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(susan_df, <span class="fu">aes</span>(<span class="at">x =</span> Premium, <span class="at">y =</span> yes_prob)) <span class="sc">+</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Probability of Susan&#39;s Purchase vs. Premium&quot;</span>,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">&quot;Premium&quot;</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Probability of Purchase&quot;</span>) <span class="sc">+</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -3663,9 +3676,67 @@ Yes_{i} = a_{0} + a_{1}*Premium_{i} + a_{2}*Age_{i} + a_{3}*Years_{i} + a_{4}*Le
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># find the area under the curve to find the average willingness to pay</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the average willingness to pay by finding the area under the curve (area of a triangle)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Intercept (represents the height of the triangle)</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>intercept <span class="ot">&lt;-</span> <span class="fu">coef</span>(lm_insurance)[<span class="st">&quot;(Intercept)&quot;</span>] <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>             <span class="dv">35</span> <span class="sc">*</span> <span class="fu">coef</span>(lm_insurance)[<span class="st">&quot;Age&quot;</span>] <span class="sc">+</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>             <span class="dv">8</span> <span class="sc">*</span> <span class="fu">coef</span>(lm_insurance)[<span class="st">&quot;Years&quot;</span>] <span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>             <span class="dv">10</span> <span class="sc">*</span> <span class="fu">coef</span>(lm_insurance)[<span class="st">&quot;Length&quot;</span>] <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>             <span class="fl">1.1</span> <span class="sc">*</span> <span class="fu">coef</span>(lm_insurance)[<span class="st">&quot;Risk&quot;</span>]</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Slope </span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>slope <span class="ot">&lt;-</span> <span class="fu">coef</span>(lm_insurance)[<span class="st">&quot;Premium&quot;</span>]</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Represents the base of the triangle (where the slope hits 0)</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>base_premium <span class="ot">&lt;-</span> <span class="sc">-</span>intercept <span class="sc">/</span> slope</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the area of the triangle </span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>wtp <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> base_premium <span class="sc">*</span> <span class="dv">1</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Here come the results! </span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>wtp</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept) 
+   281.7055 </code></pre>
 </div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Assuming wtp is your data</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the data frame</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>table_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Willingness_to_pay =</span> wtp)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate the table with enhanced formatting</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(table_data, <span class="at">caption =</span> <span class="st">&quot;Susan&#39;s Average Willingness to Pay for Index Insurance&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>, <span class="at">position =</span> <span class="st">&quot;center&quot;</span>, <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">&quot;striped&quot;</span>, <span class="st">&quot;hover&quot;</span>, <span class="st">&quot;responsive&quot;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="table-responsive">
+<table class="table table-striped table-hover caption-top table-sm small" data-quarto-postprocess="true">
+<caption>Susan&#39;s Average Willingness to Pay for Index Insurance</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Willingness_to_pay</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">281.7055</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+</div>
+</div>
+</section>
 </section>
 
 </main>

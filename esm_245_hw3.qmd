@@ -24,7 +24,7 @@ The Environmental Markets Lab (emLab) at Bren conducted a study to evaluate fish
 # Data
 
 ```{r}
-# Load libraties
+# Load libraries
 library(tidyverse)
 library(here)
 library(kableExtra)
@@ -35,22 +35,23 @@ insurance_df <- read_csv(here("data", "insurance.csv"))
 
 ```
 
--   The columns are:
-    -   ID = Respondent identifier
+The columns in the data set are as follows:
 
-    -   Premium = the (randomized) premium offered to that respondent
+-   ID = Respondent identifier
 
-    -   Yes = whether the respondent answered Yes (1) or No (0)
+-   Premium = the (randomized) premium offered to that respondent
 
-    -   Age = age of the respondent
+-   Yes = whether the respondent answered Yes (1) or No (0)
 
-    -   Years = number of years the respondent has been fishing
+-   Age = age of the respondent
 
-    -   Length = the length of the respondent's fishing vessel (in meters)
+-   Years = number of years the respondent has been fishing
 
-    -   Risk = a measure of risk aversion (higher than 1 indicates risk-averse, lower than 1 indicates risk-loving)
+-   Length = the length of the respondent's fishing vessel (in meters)
 
-# Regression analysis
+-   Risk = a measure of risk aversion (higher than 1 indicates risk-averse, lower than 1 indicates risk-loving)
+
+# Regression Analysis:
 
 $$
 Yes_{i} = a_{0} + a_{1}*Premium_{i} + a_{2}*Age_{i} + a_{3}*Years_{i} + a_{4}*Length_{i} + a_{5}*Risk_{i} + e_{i}
@@ -64,13 +65,15 @@ summary(insurance_df)
 
 2)  Run the regression described above. Make a summary table of the coefficient estimates and the p-values for each of them.
 
+### update table
+
 ```{r}
-# run linear regression on variables in formula
+# Run linear regression on variables in formula
 lm_insurance <- lm(Yes ~ Premium + Age + Years + Length + Risk, data = insurance_df)
 
 # Extract the coefficients summary
 coeff_summary <- summary(lm_insurance)$coefficients
-summary(lm_insurance)
+# summary(lm_insurance)
 
 # Display the coefficients with kable
 kable(coeff_summary, caption = "Summary of Coefficient Estimates and P-values") %>% 
@@ -82,17 +85,15 @@ kable(coeff_summary, caption = "Summary of Coefficient Estimates and P-values") 
 
 The coefficient for **Premium** is -0.0017888, meaning that for each one-unit increase in the premium, the probability of purchasing insurance decreases by about 0.0018. The very low p-value (\< 2e-16) indicates this result is statistically significant, showing that higher costs reduce the likelihood of purchase.
 
-###UPDATE THIS
-4)  Do the coefficient estimates have the sign you would have expected?
+###UPDATE THIS 4) Do the coefficient estimates have the sign you would have expected?
 
-Premium: The coefficient is negative (−0.0017888) and  significant, which matches expectations. As the premium increases, the probability of purchasing the insurance decreases, which is logical since higher costs typically deter buyers. As the premium increases, the likelihood of purchasing insurance is expected to decrease. Higher costs typically deter consumers, leading to a negative relationship.
+Premium: The coefficient is negative (−0.0017888) and significant, which matches expectations. As the premium increases, the probability of purchasing the insurance decreases, which is logical since higher costs typically deter buyers. As the premium increases, the likelihood of purchasing insurance is expected to decrease. Higher costs typically deter consumers, leading to a negative relationship.
 
 Age: The coefficient is positive (0.0035704) but not statistically significant (p-value = 0.3962), meaning age does not have a significant effect on the likelihood of purchasing insurance in this model.The effect of age on willingness to pay can be complex. Older fishermen might be more risk-averse and willing to pay for insurance, or they might have less flexibility in terms of financial resources. Thus, the sign can vary based on context.
 
 Years: The coefficient for years of experience is also positive (0.0062549), but with a p-value of 0.3617, it is not statistically significant, suggesting that experience doesn't strongly influence the willingness to pay for insurance in this case.More years of fishing experience might correlate with a better understanding of risks, potentially leading to a greater willingness to pay for insurance. Experienced fishermen may recognize the value of protecting their income against unpredictable weather patterns.
 
-Length: The coefficient is positive (
-0.0176010) and statistically significant (p-value = 4.65e−06). This indicates that larger vessel owners are more likely to purchase insurance, likely because they have more assets at stake. The length of the vessel could indicate the scale of operations. Larger vessels might lead to higher income and thus a greater willingness to invest in insurance, or conversely, they might not feel the need for insurance as much if they believe they can manage risks. The sign may depend on individual circumstances.
+Length: The coefficient is positive ( 0.0176010) and statistically significant (p-value = 4.65e−06). This indicates that larger vessel owners are more likely to purchase insurance, likely because they have more assets at stake. The length of the vessel could indicate the scale of operations. Larger vessels might lead to higher income and thus a greater willingness to invest in insurance, or conversely, they might not feel the need for insurance as much if they believe they can manage risks. The sign may depend on individual circumstances.
 
 Risk: The coefficient for risk aversion is positive (0.2429055) and statistically significant (p-value = 0.0209). This suggests that more risk-averse fishermen are more likely to buy insurance, which aligns with expectations as those who are more risk-averse tend to seek security. A higher risk aversion score indicates that a respondent is more risk-averse. It is expected that more risk-averse individuals would be willing to pay more for insurance as a way to mitigate potential losses.
 
@@ -123,7 +124,9 @@ ggplot(susan_df, aes(x = Premium, y = yes_prob)) +
        y = "Probability of Purchase") +
   theme_minimal()
 
-# Calculate the average willingness to pay by finding the area under the curve
+# Calculate the average willingness to pay by finding the area under the curve (area of a triangle)
+
+# Intercept (represents the height of the triangle)
 intercept <- coef(lm_insurance)["(Intercept)"] +
              35 * coef(lm_insurance)["Age"] +
              8 * coef(lm_insurance)["Years"] +
@@ -131,15 +134,17 @@ intercept <- coef(lm_insurance)["(Intercept)"] +
              1.1 * coef(lm_insurance)["Risk"]
 
 
-#slope
+# Slope 
 slope <- coef(lm_insurance)["Premium"]
 
-# represents the base of the triange (where the slope hits 0)
+# Represents the base of the triangle (where the slope hits 0)
 base_premium <- -intercept / slope
 
-# Calculate the area of the triangle for average willingness to pay
+# Calculate the area of the triangle 
 wtp <- 0.5 * base_premium * 1
 
-# Display the result
+# Here come the results! 
 wtp
 ```
+
+Susan's average willingness to pay for index insurance is approximately $281.71
