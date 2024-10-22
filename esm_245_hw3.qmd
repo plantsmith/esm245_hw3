@@ -13,7 +13,6 @@ execute:
   echo: true
   message: false
   warning: false
-
 ---
 
 # Background:
@@ -36,7 +35,20 @@ insurance_df <- read_csv(here("data", "insurance.csv"))
 
 ```
 
-The columns are: 1) ID = Respondent identifier (indicated by i below) 2) Premium = the premium offered to that respondent. These were randomized across respondents. 3) Yes = whether the respondent answered Yes (so Yes=1) or No (so Yes=0). 4) Age = age of the respondent 5) Years = number of years the respondent has been fishing 6) Length = the length of the respondents fishing vessel (in meters) 7) Risk = a measure of risk aversion of the respondent (higher than 1 indicates risk averse, lower than 1 indicates risk loving)
+-   The columns are:
+    -   ID = Respondent identifier
+
+    -   Premium = the (randomized) premium offered to that respondent
+
+    -   Yes = whether the respondent answered Yes (1) or No (0)
+
+    -   Age = age of the respondent
+
+    -   Years = number of years the respondent has been fishing
+
+    -   Length = the length of the respondent's fishing vessel (in meters)
+
+    -   Risk = a measure of risk aversion (higher than 1 indicates risk-averse, lower than 1 indicates risk-loving)
 
 # Regression analysis
 
@@ -44,55 +56,90 @@ $$
 Yes_{i} = a_{0} + a_{1}*Premium_{i} + a_{2}*Age_{i} + a_{3}*Years_{i} + a_{4}*Length_{i} + a_{5}*Risk_{i} + e_{i}
 $$
 
-You will use your regression results to help determine the willingness to pay of fishermen for index insurance. 
+1)  Load the dataset into R and make a summary table describing the min, mean, and max of each variable.
 
-1) Load the dataset into R and make a summary table describing the min, mean, and max of each variable. 
 ```{r}
 summary(insurance_df)
 ```
 
-2) Run the regression described above. Make a summary table of the coefficient estimates and the p-values for each of them. 
+2)  Run the regression described above. Make a summary table of the coefficient estimates and the p-values for each of them.
+
 ```{r}
 # run linear regression on variables in formula
 lm_insurance <- lm(Yes ~ Premium + Age + Years + Length + Risk, data = insurance_df)
 
 # Extract the coefficients summary
 coeff_summary <- summary(lm_insurance)$coefficients
+summary(lm_insurance)
 
 # Display the coefficients with kable
-kable(coeff_summary, caption = "Full Summary of Coefficient Estimates and P-values") %>% 
+kable(coeff_summary, caption = "Summary of Coefficient Estimates and P-values") %>% 
   kable_styling(bootstrap_options = 
                   c("striped", "hover", "condensed", "responsive"))
 ```
 
-3) Write a 1-2 sentence interpretation of the coefficient estimate for a1. 
-4) Do the coefficient estimates have the sign you would have expected? Write a brief explanation for each (around 1 sentence for each coefficient estimate). 
-5) Consider a fisher named Susan, who is 35 years old, has been fishing for 8 years, uses a 10m boat, and has a risk score of 1.1. Make a plot with the Premium on the x-axis and the Probability of Susan’s purchase on the y-axis. What is Susan’s average willingness to pay for index insurance?
+3)  Write a 1-2 sentence interpretation of the coefficient estimate for a1.
+
+The coefficient for **Premium** is -0.0017888, meaning that for each one-unit increase in the premium, the probability of purchasing insurance decreases by about 0.0018. The very low p-value (\< 2e-16) indicates this result is statistically significant, showing that higher costs reduce the likelihood of purchase.
+
+###UPDATE THIS
+4)  Do the coefficient estimates have the sign you would have expected?
+
+Premium: The coefficient is negative (−0.0017888) and  significant, which matches expectations. As the premium increases, the probability of purchasing the insurance decreases, which is logical since higher costs typically deter buyers. As the premium increases, the likelihood of purchasing insurance is expected to decrease. Higher costs typically deter consumers, leading to a negative relationship.
+
+Age: The coefficient is positive (0.0035704) but not statistically significant (p-value = 0.3962), meaning age does not have a significant effect on the likelihood of purchasing insurance in this model.The effect of age on willingness to pay can be complex. Older fishermen might be more risk-averse and willing to pay for insurance, or they might have less flexibility in terms of financial resources. Thus, the sign can vary based on context.
+
+Years: The coefficient for years of experience is also positive (0.0062549), but with a p-value of 0.3617, it is not statistically significant, suggesting that experience doesn't strongly influence the willingness to pay for insurance in this case.More years of fishing experience might correlate with a better understanding of risks, potentially leading to a greater willingness to pay for insurance. Experienced fishermen may recognize the value of protecting their income against unpredictable weather patterns.
+
+Length: The coefficient is positive (
+0.0176010) and statistically significant (p-value = 4.65e−06). This indicates that larger vessel owners are more likely to purchase insurance, likely because they have more assets at stake. The length of the vessel could indicate the scale of operations. Larger vessels might lead to higher income and thus a greater willingness to invest in insurance, or conversely, they might not feel the need for insurance as much if they believe they can manage risks. The sign may depend on individual circumstances.
+
+Risk: The coefficient for risk aversion is positive (0.2429055) and statistically significant (p-value = 0.0209). This suggests that more risk-averse fishermen are more likely to buy insurance, which aligns with expectations as those who are more risk-averse tend to seek security. A higher risk aversion score indicates that a respondent is more risk-averse. It is expected that more risk-averse individuals would be willing to pay more for insurance as a way to mitigate potential losses.
+
+5)  Consider a fisher named Susan, who is 35 years old, has been fishing for 8 years, uses a 10m boat, and has a risk score of 1.1. Make a plot with the Premium on the x-axis and the Probability of Susan’s purchase on the y-axis. What is Susan’s average willingness to pay for index insurance?
+
+$$
+Intercept_{susan} = a_{0} + a_{2}*35 + a_{3}*8 + a_{4}*10 + a_{5}*1.1
+$$
+
 ```{r}
-# Create a data frame for Susan - set the min and max of the premium coulmn based on the insurance data and fix the other variables
+# Create a data frame for Susan with premiums ranging from the min to max values in the insurance data
 susan_df <- data.frame(
-  Premium = 
-    seq(min(insurance_df$Premium), max(insurance_df$Premium), length.out = 100),
+  Premium = seq(min(insurance_df$Premium), max(insurance_df$Premium), length.out = 100),
   Age = 35,
   Years = 8,
   Length = 10,
-  Risk = 1.1)
+  Risk = 1.1
+)
 
-# Calculate the predicted probabilities for Susan based on the linear model (lm_insurance) aka how likely is susan is to accept the insurance premium at different price points based on her profile. 
-susan_df$Yes_prob <- predict(lm_insurance, newdata = susan_df, type = "response")
+# Calculate the predicted probabilities for Susan based on her profile
+susan_df$yes_prob <- predict(lm_insurance, newdata = susan_df, type = "response")
 
-# Plot the Premium vs. Probability of Purchase
-ggplot(susan_df, aes(x = Premium, y = Yes_prob)) +
+# Plot Premium vs. Probability of Purchase
+ggplot(susan_df, aes(x = Premium, y = yes_prob)) +
   geom_line() +
   labs(title = "Probability of Susan's Purchase vs. Premium",
        x = "Premium",
        y = "Probability of Purchase") +
   theme_minimal()
 
-# Find the premium where Susan's purchase probability is closest to 0.5
-# Finding the premium closest to a 50% purchase probability is often used to assess an individual's average willingness to pay for a product. 
-avg_wtp <- susan_df$Premium[which.min(abs(susan_df$Yes_prob - 0.5))]
-avg_wtp
+# Calculate the average willingness to pay by finding the area under the curve
+intercept <- coef(lm_insurance)["(Intercept)"] +
+             35 * coef(lm_insurance)["Age"] +
+             8 * coef(lm_insurance)["Years"] +
+             10 * coef(lm_insurance)["Length"] +
+             1.1 * coef(lm_insurance)["Risk"]
 
+
+#slope
+slope <- coef(lm_insurance)["Premium"]
+
+# represents the base of the triange (where the slope hits 0)
+base_premium <- -intercept / slope
+
+# Calculate the area of the triangle for average willingness to pay
+wtp <- 0.5 * base_premium * 1
+
+# Display the result
+wtp
 ```
-
