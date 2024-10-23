@@ -17,9 +17,9 @@ execute:
 
 # Background:
 
-Climate change is leading to more unpredictable weather patterns, such as variable rainfall, droughts, and floods, which can negatively impact agriculture and fisheries. One way to mitigate these risks is through insurance, like "index insurance" for farmers. In this system, farmers pay an annual premium, and the insurance uses a reliable, measurable index (such as rainfall) to determine payouts. If rainfall falls below a certain threshold, the farmer receives a financial payout to compensate for low income due to poor agricultural conditions. Since payouts are based solely on weather indices, farmers cannot manipulate the system to increase their payout.
+Climate change is leading to more unpredictable weather patterns, such as variable rainfall, droughts, and floods, which can negatively impact agriculture and fisheries. One way to mitigate these risks is through insurance, like "index insurance" for farmers. In this system, farmers pay an annual premium, and the insurance uses a reliable, measurable index (such as rainfall) to determine payouts. If rainfall falls below a certain threshold, the farmer receives a financial payout to compensate for low income due to poor agricultural conditions.
 
-The Environmental Markets Lab (emLab) at Bren conducted a study to evaluate fishermen’s willingness to pay for index insurance in fisheries.In the study, fishermen were presented with a randomized insurance premium and asked whether they would pay it. Responses were either "yes" (willing to pay) or "no" (unwilling to pay). Along with their responses, socioeconomic data and risk-aversion metrics were collected to understand what influences their willingness to pay for such insurance.
+The Environmental Markets Lab (emLab) at Bren conducted a study to evaluate fishermen’s willingness to pay for index insurance in fisheries. In the study, fishermen were presented with a randomized insurance premium and asked whether they would pay it. Responses were either "yes" (willing to pay) or "no" (unwilling to pay). Along with their responses, socioeconomic data and risk-aversion metrics were collected to understand what influences their willingness to pay for such insurance.
 
 # Data
 
@@ -53,19 +53,19 @@ The columns in the data set are as follows:
 
 # Regression Analysis:
 
-$$
-Yes_{i} = a_{0} + a_{1}*Premium_{i} + a_{2}*Age_{i} + a_{3}*Years_{i} + a_{4}*Length_{i} + a_{5}*Risk_{i} + e_{i}
-$$
+## 
 
-1)  Load the dataset into R and make a summary table describing the min, mean, and max of each variable.
+1.  *Load the dataset into R and make a summary table describing the min, mean, and max of each variable.*
 
 ```{r}
 summary(insurance_df)
 ```
 
-2)  Run the regression described above. Make a summary table of the coefficient estimates and the p-values for each of them.
+## 
 
-### update table
+$$
+Yes_{i} = a_{0} + a_{1}*Premium_{i} + a_{2}*Age_{i} + a_{3}*Years_{i} + a_{4}*Length_{i} + a_{5}*Risk_{i} + e_{i}
+$$ 2. *Run the regression described above. Make a summary table of the coefficient estimates and the p-values for each of them.*
 
 ```{r}
 # Run linear regression on variables in formula
@@ -76,34 +76,40 @@ coeff_summary <- summary(lm_insurance)$coefficients
 # summary(lm_insurance)
 
 # Display the coefficients with kable
-kable(coeff_summary, caption = "Summary of Coefficient Estimates and P-values") %>% 
+kable(coeff_summary, caption = "Summary of Estimated Coefficients and P-values") %>% 
   kable_styling(bootstrap_options = 
                   c("striped", "hover", "condensed", "responsive"))
 ```
 
-3)  Write a 1-2 sentence interpretation of the coefficient estimate for a1.
+## 
+
+3.  *Write a 1-2 sentence interpretation of the coefficient estimate for a1.*
 
 The coefficient for **Premium** is -0.0017888, meaning that for each one-unit increase in the premium, the probability of purchasing insurance decreases by about 0.0018. The very low p-value (\< 2e-16) indicates this result is statistically significant, showing that higher costs reduce the likelihood of purchase.
 
-###UPDATE THIS 4) Do the coefficient estimates have the sign you would have expected?
+## 
 
-Premium: The coefficient is negative (−0.0017888) and significant, which matches expectations. As the premium increases, the probability of purchasing the insurance decreases, which is logical since higher costs typically deter buyers. As the premium increases, the likelihood of purchasing insurance is expected to decrease. Higher costs typically deter consumers, leading to a negative relationship.
+4.  *Do the coefficient estimates have the sign you would have expected?*
 
-Age: The coefficient is positive (0.0035704) but not statistically significant (p-value = 0.3962), meaning age does not have a significant effect on the likelihood of purchasing insurance in this model.The effect of age on willingness to pay can be complex. Older fishermen might be more risk-averse and willing to pay for insurance, or they might have less flexibility in terms of financial resources. Thus, the sign can vary based on context.
+**Premium:** The coefficient is negative and significant, which matches expectations. As the premium increases, the probability of purchasing the insurance decreases, which is logical since higher costs typically deter buyers.
 
-Years: The coefficient for years of experience is also positive (0.0062549), but with a p-value of 0.3617, it is not statistically significant, suggesting that experience doesn't strongly influence the willingness to pay for insurance in this case.More years of fishing experience might correlate with a better understanding of risks, potentially leading to a greater willingness to pay for insurance. Experienced fishermen may recognize the value of protecting their income against unpredictable weather patterns.
+**Age:** The coefficient is positive (0.0035704) but not statistically significant (p-value = 0.3962), meaning age does not have a significant effect on the likelihood of purchasing insurance in this model. I expected this to go either way, as older fishermen might be more risk-averse and willing to pay for insurance, or they might be more financially limited.
 
-Length: The coefficient is positive ( 0.0176010) and statistically significant (p-value = 4.65e−06). This indicates that larger vessel owners are more likely to purchase insurance, likely because they have more assets at stake. The length of the vessel could indicate the scale of operations. Larger vessels might lead to higher income and thus a greater willingness to invest in insurance, or conversely, they might not feel the need for insurance as much if they believe they can manage risks. The sign may depend on individual circumstances.
+**Years:** The coefficient for years of experience is positive (0.0063) but not statistically significant (p = 0.3617), suggesting it doesn't strongly influence willingness to pay for insurance. This aligns with expectations, as more experience may lead to better risk understanding and increased willingness to pay.
 
-Risk: The coefficient for risk aversion is positive (0.2429055) and statistically significant (p-value = 0.0209). This suggests that more risk-averse fishermen are more likely to buy insurance, which aligns with expectations as those who are more risk-averse tend to seek security. A higher risk aversion score indicates that a respondent is more risk-averse. It is expected that more risk-averse individuals would be willing to pay more for insurance as a way to mitigate potential losses.
+**Length:** The positive coefficient (0.0176) and statistically significant p-value (4.65e−06) indicate that larger vessel owners are more likely to buy insurance. This is expected, as larger vessels often signify more assets and higher risk, making insurance more necessary.
 
-5)  Consider a fisher named Susan, who is 35 years old, has been fishing for 8 years, uses a 10m boat, and has a risk score of 1.1. Make a plot with the Premium on the x-axis and the Probability of Susan’s purchase on the y-axis. What is Susan’s average willingness to pay for index insurance?
+**Risk:** The coefficient for risk aversion is positive (0.2429055) and statistically significant (p-value = 0.0209). This suggests that more risk-averse fishermen are more likely to buy insurance, which aligns with expectations as those who are more risk-averse tend to seek security.
+
+## 
+
+5.  *Consider a fisher named Susan, who is 35 years old, has been fishing for 8 years, uses a 10m boat, and has a risk score of 1.1. Make a plot with the Premium on the x-axis and the Probability of Susan’s purchase on the y-axis. What is Susan's average willingness to pay for index insurance?*
 
 $$
 Intercept_{susan} = a_{0} + a_{2}*35 + a_{3}*8 + a_{4}*10 + a_{5}*1.1
 $$
 
-```{r}
+```{r, fig.cap="Figure 1: Illustrates Susan's predicted probability of purchasing index insurance as a function of varying premiums, based on a linear regression model from a study of fishermen."}
 # Create a data frame for Susan with premiums ranging from the min to max values in the insurance data
 susan_df <- data.frame(
   Premium = seq(min(insurance_df$Premium), max(insurance_df$Premium), length.out = 100),
@@ -133,18 +139,17 @@ intercept <- coef(lm_insurance)["(Intercept)"] +
              10 * coef(lm_insurance)["Length"] +
              1.1 * coef(lm_insurance)["Risk"]
 
-
 # Slope 
 slope <- coef(lm_insurance)["Premium"]
 
 # Represents the base of the triangle (where the slope hits 0)
-base_premium <- -intercept / slope
+base_premium <- intercept / abs(slope)
 
 # Calculate the area of the triangle 
 wtp <- 0.5 * base_premium * 1
 
 # Here come the results! 
-wtp
+# wtp
 ```
 
-Susan's average willingness to pay for index insurance is approximately $281.71
+Susan's average willingness to pay for index insurance is approximately **\$281.71**
